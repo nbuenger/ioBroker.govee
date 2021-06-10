@@ -35,6 +35,7 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
 ### ioBroker States ####
 
 | instance object    | govee.x                 | main object for the govee insrtance               |
+| --- | --- | --- |
 | device object      | XX:XX:XX:XX:XX:XX:XX:XX | device object for on lighting device              |
 | color folder       | color                   | folder for 2 types of color objects               |
 | color hsv folder   | hsv                     | folder for the hsv color format                   |
