@@ -15,82 +15,42 @@
 
 control govee lights over there api
 
-## Developer manual
-This section is intended for the developer. It can be deleted later
+## THIS VERSION IS FOR TEST ONLY
+This Govee Adapter for ioBroker is in development. Some functions may not work probably.
+This adapter only works with govee Wifi lightnings not Bluetooth.
 
 ### Getting started
 
-You are almost done, only a few steps left:
-1. Create a new repository on GitHub with the name `ioBroker.govee`
-1. Initialize the current folder as a new git repository:  
-	```bash
-	git init
-	git add .
-	git commit -m "Initial commit"
-	```
-1. Link your local repository with the one on GitHub:  
-	```bash
-	git remote add origin https://github.com/nbuenger/ioBroker.govee
-	```
+1. Install this adapter on your ioBroker.
+2. Get your own Govee API key.
+ - Go to your Account tab -> "Settings" -> "About us" -> "Apply for API key"
+ - Fill out your name und your reason ("SmartHome Control" would be sufficient)
+ - You will receice your API Key to your Govee registered email address
 
-1. Push all files to the GitHub repo:  
-	```bash
-	git push origin master
-	```
+3. Paste your API Key in the Govee Adapter configuration.
 
-1. Head over to [main.js](main.js) and start programming!
+4. All your by the Govee API supportet Lights will be automatically added to your ioBroker objects.
+5. States for your objects will added automatically.
 
-### Best Practices
-We've collected some [best practices](https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices) regarding ioBroker development and coding in general. If you're new to ioBroker or Node.js, you should
-check them out. If you're already experienced, you should also take a look at them - you might learn something new :)
+### ioBroker States ####
 
-### Scripts in `package.json`
-Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
-| Script name | Description |
-|-------------|-------------|
-| `test:js` | Executes the tests you defined in `*.test.js` files. |
-| `test:package` | Ensures your `package.json` and `io-package.json` are valid. |
-| `test:unit` | Tests the adapter startup with unit tests (fast, but might require module mocks to work). |
-| `test:integration` | Tests the adapter startup with an actual instance of ioBroker. |
-| `test` | Performs a minimal test run on package files and your tests. |
-| `check` | Performs a type-check on your code (without compiling anything). |
-| `lint` | Runs `ESLint` to check your code for formatting errors and potential bugs. |
-
-### Writing tests
-When done right, testing code is invaluable, because it gives you the 
-confidence to change your code while knowing exactly if and when 
-something breaks. A good read on the topic of test-driven development 
-is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92. 
-Although writing tests before the code might seem strange at first, but it has very 
-clear upsides.
-
-The template provides you with basic tests for the adapter startup and package files.
-It is recommended that you add your own tests into the mix.
-
-### Publishing the adapter
-Since you have chosen GitHub Actions as your CI service, you can 
-enable automatic releases on npm whenever you push a new git tag that matches the form 
-`v<major>.<minor>.<patch>`. The necessary steps are described in `.github/workflows/test-and-release.yml`.
-
-To get your adapter released in ioBroker, please refer to the documentation 
-of [ioBroker.repositories](https://github.com/ioBroker/ioBroker.repositories#requirements-for-adapter-to-get-added-to-the-latest-repository).
-
-### Test the adapter manually on a local ioBroker installation
-In order to install the adapter locally without publishing, the following steps are recommended:
-1. Create a tarball from your dev directory:  
-	```bash
-	npm pack
-	```
-1. Upload the resulting file to your ioBroker host
-1. Install it locally (The paths are different on Windows):
-	```bash
-	cd /opt/iobroker
-	npm i /path/to/tarball.tgz
-	```
-
-For later updates, the above procedure is not necessary. Just do the following:
-1. Overwrite the changed files in the adapter directory (`/opt/iobroker/node_modules/iobroker.govee`)
-1. Execute `iobroker upload govee` on the ioBroker host
+| instance object    | govee.x                 | main object for the govee insrtance               |
+| device object      | XX:XX:XX:XX:XX:XX:XX:XX | device object for on lighting device              |
+| color folder       | color                   | folder for 2 types of color objects               |
+| color hsv folder   | hsv                     | folder for the hsv color format                   |
+| color object h     | h                       | object for color control hue                      |
+| color object s     | s                       | object for color control saturation               |
+| color object v     | v                       | object for color control value (Default: 100)     |
+| color rgb folder   | rgb                     | folder for the rgb color format                   |
+| color object r     | r                       | object for color control red                      |
+| color object g     | g                       | object for color control green                    |
+| color object b     | b                       | object for color control blue                     |
+| brightness object  | brightness              | object for brightness control                     |
+| colorTem object    | colorTem                | object for colorTem control                       |
+| colorTemMod object | colorTemMod             | object for colorTemMod control (Needed for Yahka) |
+| model object       | model                   | object shows your device model                    |
+| online object      | online                  | object shows is your device online                |
+| powerState object  | powerstate              | object shows is your device powered on or off     |
 
 ## Changelog
 

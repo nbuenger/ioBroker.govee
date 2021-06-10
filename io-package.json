@@ -5,40 +5,16 @@
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
+				"de": "Erstveröffentlichung"
 			}
 		},
 		"titleLang": {
 			"en": "govee",
-			"de": "govee",
-			"ru": "govee",
-			"pt": "govee",
-			"nl": "govee",
-			"fr": "govee",
-			"it": "govee",
-			"es": "govee",
-			"pl": "govee",
-			"zh-cn": "govee"
+			"de": "govee"
 		},
 		"desc": {
 			"en": "control govee lights over there api",
-			"de": "control govee lights over there api",
-			"ru": "control govee lights over there api",
-			"pt": "control govee lights over there api",
-			"nl": "control govee lights over there api",
-			"fr": "control govee lights over there api",
-			"it": "control govee lights over there api",
-			"es": "control govee lights over there api",
-			"pl": "control govee lights over there api",
-			"zh-cn": "control govee lights over there api"
+			"de": "steuere deine Govee Leuchtmittelüber die API"
 		},
 		"authors": [
 			"Nick Bünger <buenger.nick@gmail.com>"
@@ -52,12 +28,10 @@
 		"platform": "Javascript/Node.js",
 		"icon": "govee.png",
 		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/nbuenger/ioBroker.govee/master/admin/govee.png",
+		"extIcon": "https://raw.githubusercontent.com/nbuenger/ioBroker.govee/master/admin/govee.png.",
 		"readme": "https://github.com/nbuenger/ioBroker.govee/blob/master/README.md",
 		"loglevel": "info",
-		"restartAdapters": [
-			"vis"
-		],
+		"restartAdapters": [],
 		"localLinks": {
 			"_default": "%web_protocol%://%ip%:%web_port%/vis/edit.html"
 		},
@@ -70,8 +44,7 @@
 		"dependencies": [
 			{
 				"js-controller": ">=2.0.0"
-			},
-			"vis"
+			}	
 		]
 	},
 	"native": {
