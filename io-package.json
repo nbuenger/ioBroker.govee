@@ -33,7 +33,7 @@
 		"platform": "Javascript/Node.js",
 		"icon": "govee.png",
 		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/nbuenger/ioBroker.govee/master/admin/govee.png.",
+		"extIcon": "https://raw.githubusercontent.com/nbuenger/ioBroker.govee/master/admin/govee.png",
 		"readme": "https://github.com/nbuenger/ioBroker.govee/blob/master/README.md",
 		"loglevel": "info",
 		"restartAdapters": [],
