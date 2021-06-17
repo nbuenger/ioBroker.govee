@@ -1,11 +1,15 @@
 {
 	"common": {
 		"name": "govee",
-		"version": "0.0.1",
+		"version": "0.0.2",
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
 				"de": "Erstveröffentlichung"
+			},
+			"0.0.2": {
+				"en": "Update multidevice support and refresh values by api",
+				"de": "Multidevice support und aktuelle Werte werden von der API gezogen."
 			}
 		},
 		"titleLang": {

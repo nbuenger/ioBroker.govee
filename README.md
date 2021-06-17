@@ -28,9 +28,10 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
  - You will receice your API Key to your Govee registered email address
 
 3. Paste your API Key in the Govee Adapter configuration.
+4. Set up the refresh time value (min: 5 seconds).
 
-4. All your by the Govee API supportet Lights will be automatically added to your ioBroker objects.
-5. States for your objects will added automatically.
+5. All your by the Govee API supportet Lights will be automatically added to your ioBroker objects.
+6. States for your objects will added automatically.
 
 ### ioBroker States ####
 
@@ -57,6 +58,11 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
 
 ### 0.0.1
 * (Nick Bünger) initial release
+
+### 0.0.2
+* (Nick Büger) Update 0.0.2
+ - Multidevice support added.
+ - devicestate updates by govee API
 
 ## License
 MIT License
