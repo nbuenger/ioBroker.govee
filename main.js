@@ -427,7 +427,7 @@ class Govee extends utils.Adapter {
 				common: {
 					name: "govee.device.state.model",
 					type: "string",
-					role: "indicator",
+					role: "info.name",
 					read: true,
 					write: false,
 				},
@@ -469,7 +469,7 @@ class Govee extends utils.Adapter {
 					case 'color':
 						this.log.info('Device: ' + item.device + ' supports cmd "color"');
 						this.setObjectNotExistsAsync(item.device + '.color', {
-							type: "device",
+							type: "channel",
 							common: {
 								name: "govee.device.state.colors",
 								read: true,
@@ -479,7 +479,7 @@ class Govee extends utils.Adapter {
 						});
 						this.log.info('object "color" for: ' + item.device + ' created');
 						this.setObjectNotExistsAsync(item.device + '.color.rgb', {
-							type: "device",
+							type: "channel",
 							common: {
 								name: "govee.device.state.colors.rgb",
 								read: true,
@@ -493,7 +493,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.red",
 								type: "number",
-								role: "color.red",
+								role: "level.color.red",
 								min: 0,
 								max: 255
 							},
@@ -505,7 +505,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.green",
 								type: "number",
-								role: "color.green",
+								role: "level.color.green",
 								min: 0,
 								max: 255
 							},
@@ -517,7 +517,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.blue",
 								type: "number",
-								role: "color.blue",
+								role: "level.color.blue",
 								min: 0,
 								max: 255
 							},
@@ -525,7 +525,7 @@ class Govee extends utils.Adapter {
 						});
 						this.log.info('object "color.blue" for: ' + item.device + ' created');
 						this.setObjectNotExistsAsync(item.device + '.color.hsv', {
-							type: "device",
+							type: "channel",
 							common: {
 								name: "govee.device.state.colors.hsv",
 								read: true,
@@ -539,7 +539,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.hue",
 								type: "number",
-								role: "color.hue",
+								role: "level.color.hue",
 								min: 0,
 								max: 360
 							},
@@ -551,7 +551,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.saturation",
 								type: "number",
-								role: "color.saturation",
+								role: "level.color.saturation",
 								min: 0,
 								max: 100
 							},
@@ -563,7 +563,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colors.value",
 								type: "number",
-								role: "color.value",
+								role: "level.color.value",
 								min: 0,
 								max: 100
 							},
@@ -578,7 +578,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colorTem",
 								type: "number",
-								role: "level.colorTem",
+								role: "level.color.temperature",
 								min: item.properties.colorTem.range.min,
 								max: item.properties.colorTem.range.max,
 							},
@@ -590,7 +590,7 @@ class Govee extends utils.Adapter {
 							common: {
 								name: "govee.device.state.colorTemMod",
 								type: "number",
-								role: "level.colorTemMod",
+								role: "level.color.temperature",
 								min: 140,
 								max: 500,
 							},
@@ -621,7 +621,7 @@ class Govee extends utils.Adapter {
 									common: {
 										name: "govee.device.state.online",
 										type: "boolean",
-										role: "indicator",
+										role: "indicator.reachable",
 										read: true,
 										write: false,
 									},
