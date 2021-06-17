@@ -11,7 +11,7 @@
 
 **Tests:** ![Test and Release](https://github.com/nbuenger/ioBroker.govee/workflows/Test%20and%20Release/badge.svg)
 
-## govee adapter for ioBroker
+## Govee Control
 
 control govee lights over there api<br><br>
 **Govee** is a brand of DE-GOVEE Moments Ltd.<br>
