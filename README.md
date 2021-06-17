@@ -13,7 +13,11 @@
 
 ## govee adapter for ioBroker
 
-control govee lights over there api
+control govee lights over there api<br><br>
+**Govee** is a brand of DE-GOVEE Moments Ltd.<br>
+All images and trademarks are for illustrative purposes only and I do not collect any rights to the trademark.<br>
+For more information, visit the Govee page: https://us.govee.com/ 
+
 
 ## THIS VERSION IS FOR TEST ONLY
 This Govee Adapter for ioBroker is in development. Some functions may not work probably.
