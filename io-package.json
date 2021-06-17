@@ -12,9 +12,10 @@
 				"de": "Multidevice support und aktuelle Werte werden von der API gezogen."
 			}
 		},
+		"title": "Govee",
 		"titleLang": {
-			"en": "govee",
-			"de": "govee"
+			"en": "Govee",
+			"de": "Govee"
 		},
 		"desc": {
 			"en": "control govee lights over there api",
