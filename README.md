@@ -20,7 +20,7 @@ For more information, visit the Govee page: https://us.govee.com/
 
 
 ## THIS VERSION IS FOR TEST ONLY
-This Govee Adapter for ioBroker is in development. Some functions may not work probably.
+This Govee adapter is in development. Some functions may not work probably.
 This adapter only works with govee Wifi lightnings not Bluetooth.
 
 ### Getting started
