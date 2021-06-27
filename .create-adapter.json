@@ -10,8 +10,7 @@
 	],
 	"expert": "no",
 	"features": [
-		"adapter",
-		"vis"
+		"adapter"
 	],
 	"adminFeatures": [],
 	"type": "lighting",

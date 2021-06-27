@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "govee",
-		"version": "0.0.2",
+		"version": "0.0.3",
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
@@ -10,6 +10,10 @@
 			"0.0.2": {
 				"en": "Update multidevice support and refresh values by api",
 				"de": "Multidevice support und aktuelle Werte werden von der API gezogen."
+			},
+			"0.0.3": {
+				"en": "add expert log, add object hex, value brightness cant be under 1",
+				"de": "Expertenlog hinzugefügt, Object hex hinzugefügt, value brightness kann nicht kleiner als 1 sein"
 			}
 		},
 		"title": "Govee",
@@ -53,8 +57,7 @@
 		]
 	},
 	"native": {
-		"option1": true,
-		"option2": "42"
+		"option1": true
 	},
 	"objects": [],
 	"instanceObjects": []

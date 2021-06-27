@@ -51,6 +51,7 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
 | color object r     | r                       | object for color control red                      |
 | color object g     | g                       | object for color control green                    |
 | color object b     | b                       | object for color control blue                     |
+| color object hex   | hex                     | object for color control hex                      |
 | brightness object  | brightness              | object for brightness control                     |
 | colorTem object    | colorTem                | object for colorTem control                       |
 | colorTemMod object | colorTemMod             | object for colorTemMod control (Needed for Yahka) |
@@ -66,7 +67,13 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
 ### 0.0.2
 * (Nick Büger) Update 0.0.2
  - Multidevice support added.
- - devicestate updates by govee API
+ - devicestate updates by govee API.
+
+### 0.0.3
+* (Nick Bünger) Update 0.0.3
+ - add expert log.
+ - add object hex.
+ - value brightness cant be under 1.
 
 ## License
 MIT License

@@ -13,11 +13,10 @@ const utils = require("@iobroker/adapter-core");
 const axios = require('axios');
 const convert = require('color-convert');
 var startup = true;
-var colorTempzero = 0;
-var colorTempzeromod = 0;
 var lastcommand;
 var devicelist = [];
 var controlmode = false;
+var expert_log;
 
 class Govee extends utils.Adapter {
 
@@ -47,11 +46,21 @@ class Govee extends utils.Adapter {
 		// this.config:
 
 		// Govee Master //
+
+		if(this.config.expert_log) {
+			expert_log = true;
+			this.log.info("Expert log enabled");
+		} else {
+			expert_log = false;
+			this.log.warn("Expert log disabled");
+		}
+
 		var govee_api_key = this.config.govee_api_key;
+
 		var refreshInterval;
 		if(this.config.refreshInterval) {
 			refreshInterval = this.config.refreshInterval * 1000;
-			this.log.info('Refresh interval set to: ' + this.config.refreshInterval + ' seceonds');
+			this.postLog('Refresh interval set to: ' + this.config.refreshInterval + ' seceonds',"info");
 		} else {
 			refreshInterval = 15000;
 			this.log.warn('Refresh interval not set! Default Value is 15 seconds');
@@ -77,14 +86,14 @@ class Govee extends utils.Adapter {
 			};
 			axios.get('https://developer-api.govee.com/v1/devices',config)
 			.then((res) => {
-				this.log.info('Request send: get device list');
-				this.log.info('Server Response: ' + res.status + ' (' + res.statusText + ')');
+				this.postLog('Request send: get device list',"info");
+				this.postLog('Server Response: ' + res.status + ' (' + res.statusText + ')',"info");
 				if(res.status == "200") {
-					this.log.info('Found (' + res.data.data.devices.length + ') Devices');
+					this.postLog('Found (' + res.data.data.devices.length + ') Devices',"info");
 					for (var key in res.data.data.devices) {
 						var obj = res.data.data.devices[key];
-						this.log.info("Select Device: " + obj.device);
-						devicelist.push(obj.device); // TEST
+						this.postLog("Select Device: " + obj.device,"info");
+						devicelist.push(obj.device); // IN TESTING
 						this.addObjects(obj);		
 					}
 					startup = false;
@@ -217,7 +226,11 @@ class Govee extends utils.Adapter {
 							break;
 						case 'brightness':
 							command = "brightness";
-							commandvalue = state.val;
+							if(state.val < 1) {
+								commandvalue = "1";
+							} else {
+								commandvalue = state.val;
+							}
 							break;
 						case 'color':
 							if(deviceID[4] == 'rgb'){
@@ -231,6 +244,8 @@ class Govee extends utils.Adapter {
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.h',hsv[0],true);
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.s',hsv[1],true);
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.v',hsv[2],true);
+								var hex = convert.rgb.hex(wert_r,wert_g,wert_b);
+								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hex',hex,true);
 								commandvalue = JSON.parse('{\u0022r\u0022:' + wert_r + ',\u0022g\u0022:' + wert_g + ',\u0022b\u0022:' + wert_b + '}');
 							} else if(deviceID[4] == 'hsv') {
 								var wert_state_h = await this.getStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.h');
@@ -243,7 +258,35 @@ class Govee extends utils.Adapter {
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.r',rgb[0],true);
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.g',rgb[1],true);
 								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.b',rgb[2],true);
+								var hex = convert.rgb.hex(wert_r,wert_g,wert_b);
+								this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hex',hex,true);
 								commandvalue = JSON.parse('{\u0022r\u0022:' + rgb[0] + ',\u0022g\u0022:' + rgb[1] + ',\u0022b\u0022:' + rgb[2] + '}');
+							} else if(deviceID[4] == 'hex') {
+								var wert_state_hex = await this.getStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hex');
+								var wert_hex = wert_state_hex.val;
+								var rgb;
+								var hsv;								
+								if(/^#[0-9A-F]{6}$/i.test(wert_hex)) {
+									rgb = convert.hex.rgb(wert_hex);		
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.r',rgb[0],true);
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.g',rgb[1],true);
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.b',rgb[2],true);
+									hsv = convert.hex.hsv(wert_hex);
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.h',hsv[0],true);
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.s',hsv[1],true);
+									this.setStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.hsv.v',hsv[2],true);
+									commandvalue = JSON.parse('{\u0022r\u0022:' + rgb[0] + ',\u0022g\u0022:' + rgb[1] + ',\u0022b\u0022:' + rgb[2] + '}');	
+								} else {
+									this.postLog('HEX value is invalid: ' + wert_hex,"error");
+									var wert_state_r = await this.getStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.r');
+									var wert_r = wert_state_r.val;
+									var wert_state_g = await this.getStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.g');
+									var wert_g = wert_state_g.val;
+									var wert_state_b = await this.getStateAsync(deviceID[0] + '.' + deviceID[1] + '.' + deviceID[2] + '.color.rgb.b');
+									var wert_b = wert_state_b.val;
+									commandvalue = JSON.parse('{\u0022r\u0022:' + wert_r + ',\u0022g\u0022:' + wert_g + ',\u0022b\u0022:' + wert_b + '}');
+								}
+								
 							}
 							command = 'color';
 							break;
@@ -287,7 +330,7 @@ class Govee extends utils.Adapter {
 							lastcommand = JSON.stringify(data);
 							axios.put('https://developer-api.govee.com/v1/devices/control',data,config)
 							.then((resmodcontrol) => {
-								this.log.info("Server Response: " + resmodcontrol.status + " (" + resmodcontrol.statusText + ")");
+								this.postLog("Server Response: " + resmodcontrol.status + " (" + resmodcontrol.statusText + ")","info");
 							}).catch((errmodcontrol) => {
 								this.log.error(errmodcontrol);
 							});
@@ -327,6 +370,30 @@ class Govee extends utils.Adapter {
 		return ergebnis;
 	}
 
+	postLog(msg,level) {
+		if(expert_log) {
+			switch (level) {
+				case "info":
+					this.log.info(msg);
+					break;
+				case "warn":
+					this.log.warn(msg);
+					break;
+				case "error":
+					this.log.error(msg);
+					break;
+				case "debug":
+					this.log.debug(msg);
+					break;
+				default:
+					this.log.error('NO LOG LEVEL TYPE');
+					break;
+			}
+		} else {
+			this.log.debug(msg);
+		}
+	}
+
 	async refreshValues() {
 		if(!startup) {
 			if(!controlmode) {
@@ -342,9 +409,9 @@ class Govee extends utils.Adapter {
 
 					axios.get('https://developer-api.govee.com/v1/devices',config)
 					.then((resUpdate) => {
-						this.log.info('Function: get current device info by API');
-						this.log.info('Request send: get device list');
-						this.log.info('Server Response: ' + resUpdate.status + ' (' + resUpdate.statusText + ')');
+						this.postLog('Function: get current device info by API',"info");
+						this.postLog('Request send: get device list',"info");
+						this.postLog('Server Response: ' + resUpdate.status + ' (' + resUpdate.statusText + ')',"info");
 						if(resUpdate.status == "200") {
 							// Remove old Devices
 							for(var locallistitemkey in devicelist) {
@@ -352,7 +419,7 @@ class Govee extends utils.Adapter {
 								if(resUpdate.data.data.devices.some(device => device.device === locallistitem)) {
 									//this.log.error('JA: ' + locallistitem); //REMOVE
 								} else {
-									this.log.warn('Local object: "' + locallistitem + '" not foud in your Govee devices.');
+									this.postLog('Local object: "' + locallistitem + '" not foud in your Govee devices.',"warn");
 									this.removeObjects(instance + '.' + locallistitem,locallistitem);
 									devicelist.splice(locallistitemkey,1);
 								}
@@ -365,7 +432,7 @@ class Govee extends utils.Adapter {
 									//this.log.error('JA'); // REMOVE
 									//this.log.error(JSON.stringify(globallistitem)); // REMOVE
 								} else {
-									this.log.info('New Device found in your Govee Account: ' + globallistitem.device);
+									this.postLog('New Device found in your Govee Account: ' + globallistitem.device,"info");
 									controlmode = true;
 									devicelist.push(globallistitem.device);
 									this.addObjects(globallistitem);
@@ -390,13 +457,13 @@ class Govee extends utils.Adapter {
 	}
 
 	async removeObjects(id,name) {
-		var rmobjects = ['.powerState','.online','.model','.colorTemMod','.colorTem','.brightness','.r','.g','.b','.h','.s','.v','.rgb','.hsv0','.color'];
+		var rmobjects = ['.powerState','.online','.model','.colorTemMod','.colorTem','.brightness','color.rgb.r','color.rgb.g','color.rgb.b','color.hsv.h','color.hsv.s','color.hsv.v','color.rgb','color.hsv','.color.hex','.color'];
 		for (var rmobjectskey in rmobjects) {
 			var rmobjectsitem = rmobjects[rmobjectskey];
 			this.delObject(id + rmobjectsitem);
 		}
 		this.delObject(id);
-		this.log.info('"' + name + '" will be removed');
+		this.postLog('"' + name + '" will be removed',"info");
 	}
 
 	async addObjects(item) {
@@ -411,7 +478,7 @@ class Govee extends utils.Adapter {
 		var newcolorTempzero;
 		var newcolorTempzeromod;
 		if(item.controllable == true) {
-			this.log.info("Device: " + item.device + ' is controllable');
+			this.postLog("Device: " + item.device + ' is controllable',"info");
 			this.setObjectNotExistsAsync(item.device, {
 				type: "device",
 				common: {
@@ -421,7 +488,7 @@ class Govee extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.log.info("Device: " + item.device + ' created');
+			this.postLog("Device: " + item.device + ' created',"info");
 			this.setObjectNotExistsAsync(item.device + '.model', {
 				type: "state",
 				common: {
@@ -433,13 +500,13 @@ class Govee extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.log.info('object "model" for: ' + item.device + ' created');
+			this.postLog('object "model" for: ' + item.device + ' created',"info");
 			this.setStateAsync(item.device + '.model', item.model,true);
 			for (var newdevicekey in item.supportCmds) {
 				var newdevicecmd = item.supportCmds[newdevicekey];
 				switch (newdevicecmd) {
 					case 'turn':
-						this.log.info('Device: ' + item.device + ' supports cmd "powerState"');
+						this.postLog('Device: ' + item.device + ' supports cmd "powerState"',"info");
 						this.setObjectNotExistsAsync(item.device + '.powerState', {
 							type: "state",
 							common: {
@@ -449,10 +516,10 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "powerState" for: ' + item.device + ' created');
+						this.postLog('object "powerState" for: ' + item.device + ' created',"info");
 						break;
 					case 'brightness':
-						this.log.info('Device: ' + item.device + ' supports cmd "brightness"');
+						this.postLog('Device: ' + item.device + ' supports cmd "brightness"',"info");
 						this.setObjectNotExistsAsync(item.device + '.brightness', {
 							type: "state",
 							common: {
@@ -464,10 +531,10 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "brightness" for: ' + item.device + ' created');
+						this.postLog('object "brightness" for: ' + item.device + ' created',"info");
 						break;
 					case 'color':
-						this.log.info('Device: ' + item.device + ' supports cmd "color"');
+						this.postLog('Device: ' + item.device + ' supports cmd "color"',"info");
 						this.setObjectNotExistsAsync(item.device + '.color', {
 							type: "channel",
 							common: {
@@ -477,7 +544,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color" for: ' + item.device + ' created');
+						this.postLog('object "color" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.rgb', {
 							type: "channel",
 							common: {
@@ -487,7 +554,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.rgb" for: ' + item.device + ' created');
+						this.postLog('object "color.rgb" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.rgb.r', {
 							type: "state",
 							common: {
@@ -499,7 +566,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.red" for: ' + item.device + ' created');
+						this.postLog('object "color.red" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.rgb.g', {
 							type: "state",
 							common: {
@@ -511,7 +578,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.green" for: ' + item.device + ' created');
+						this.postLog('object "color.green" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.rgb.b', {
 							type: "state",
 							common: {
@@ -523,7 +590,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.blue" for: ' + item.device + ' created');
+						this.postLog('object "color.blue" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.hsv', {
 							type: "channel",
 							common: {
@@ -533,7 +600,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.hsv" for: ' + item.device + ' created');
+						this.postLog('object "color.hsv" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.hsv.h', {
 							type: "state",
 							common: {
@@ -545,7 +612,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.hue" for: ' + item.device + ' created');
+						this.postLog('object "color.hue" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.hsv.s', {
 							type: "state",
 							common: {
@@ -557,7 +624,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.saturation" for: ' + item.device + ' created');
+						this.postLog('object "color.saturation" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.color.hsv.v', {
 							type: "state",
 							common: {
@@ -569,10 +636,20 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "color.value" for: ' + item.device + ' created');
+						this.postLog('object "color.value" for: ' + item.device + ' created',"info");
+						this.setObjectNotExistsAsync(item.device + '.color.hex', {
+							type: "state",
+							common: {
+								name: "govee.device.state.colors.hex",
+								type: "string",
+								role: "level.color.hex"
+							},
+							native: {},
+						});
+						this.postLog('object "color.hex" for: ' + item.device + ' created',"info");
 						break;
 					case 'colorTem':
-						this.log.info('Device: ' + item.device + ' supports cmd "colorTem"');
+						this.postLog('Device: ' + item.device + ' supports cmd "colorTem"',"info");
 						this.setObjectNotExistsAsync(item.device + '.colorTem', {
 							type: "state",
 							common: {
@@ -584,7 +661,7 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "colorTem" for: ' + item.device + ' created');
+						this.postLog('object "colorTem" for: ' + item.device + ' created',"info");
 						this.setObjectNotExistsAsync(item.device + '.colorTemMod', {
 							type: "state",
 							common: {
@@ -596,20 +673,20 @@ class Govee extends utils.Adapter {
 							},
 							native: {},
 						});
-						this.log.info('object "colorTemMod" for: ' + item.device + ' created');
+						this.postLog('object "colorTemMod" for: ' + item.device + ' created',"info");
 						newcolorTempzero = ((item.properties.colorTem.range.min + item.properties.colorTem.range.max) / 2);
 						newcolorTempzeromod = this.inscale('small',newcolorTempzero,item.properties.colorTem.range.min,item.properties.colorTem.range.max,140,500);
 						break;
 					default:
-						this.log.warn('No commands for control found for Device: ' + item.device);
+						this.postLog('No commands for control found for Device: ' + item.device,"warn");
 						break;	
 				}
 			}
-			this.log.info('Device "' + item.device + '" was created.');
+			this.postLog('Device "' + item.device + '" was created.',"info");
 			axios.get('https://developer-api.govee.com/v1/devices/state?device=' + encodeURI(item.device) + '&model=' + encodeURI(item.model),config)
 			.then((newresmod) => {
-				this.log.info('Request send: get device info (' + item.device + ')');
-				this.log.info('Server Response: ' + newresmod.status + ' (' + newresmod.statusText + ')');
+				this.postLog('Request send: get device info (' + item.device + ')',"info");
+				this.postLog('Server Response: ' + newresmod.status + ' (' + newresmod.statusText + ')',"info");
 				if(newresmod.status == 200) {
 					// Fill objects with values
 					for (var newdevicepropkey in newresmod.data.data.properties) {
@@ -627,7 +704,7 @@ class Govee extends utils.Adapter {
 									},
 									native: {},
 								});
-								this.log.info('object "online" for: ' + item.device + ' created');
+								this.postLog('object "online" for: ' + item.device + ' created',"info");
 								this.setStateAsync(item.device + '.online', newdeviceprop.online,true);
 								break;
 							case 'powerState':
@@ -636,16 +713,22 @@ class Govee extends utils.Adapter {
 								} else {this.setStateAsync(item.device + '.powerState', false,true);}
 								break;
 							case 'brightness':
-								this.setStateAsync(item.device + '.brightness', newdeviceprop.brightness,true);
+								if(newdeviceprop.brightness < 1) {
+									this.setStateAsync(item.device + '.brightness', "1",true);
+								} else {
+									this.setStateAsync(item.device + '.brightness', newdeviceprop.brightness,true);
+								}
 								break;
 							case 'color':
 								this.setStateAsync(item.device + '.color.rgb.r', newdeviceprop.color.r,true);
 								this.setStateAsync(item.device + '.color.rgb.g', newdeviceprop.color.g,true);
 								this.setStateAsync(item.device + '.color.rgb.b', newdeviceprop.color.b,true);
-								var newhsv = convert.rgb.hsv(newdeviceprop.color.r,newdeviceprop.color.g,newdeviceprop.color.b)
+								var newhsv = convert.rgb.hsv(newdeviceprop.color.r,newdeviceprop.color.g,newdeviceprop.color.b);
 								this.setStateAsync(item.device + '.color.hsv.h', newhsv[0],true);
 								this.setStateAsync(item.device + '.color.hsv.s', newhsv[1],true);
 								this.setStateAsync(item.device + '.color.hsv.v', newhsv[2],true);
+								var newhex = convert.rgb.hex(newdeviceprop.color.r,newdeviceprop.color.g,newdeviceprop.color.b);
+								this.setStateAsync(item.device + '.color.hex', "#" + newhex,true);
 								if(newcolorTempzero != 0) {
 									this.setStateAsync(item.device + '.colorTem', newcolorTempzero,true);
 									this.setStateAsync(item.device + '.colorTemMod', newcolorTempzeromod,true);
@@ -667,11 +750,11 @@ class Govee extends utils.Adapter {
 								this.setStateAsync(item.device + '.color.hsv.v', 100,true);
 								break;
 							default:
-								this.log.warn("cant find any propertie for Device: " + item.device);
+								this.postLog("cant find any propertie for Device: " + item.device,"warn");
 								break;
 						}
 					}
-					this.log.info('Values for object: ' + item.device + ' added');
+					this.postLog('Values for object: ' + item.device + ' added',"info");
 					controlmode = false;
 				}
 			}).catch((newerrmod) => {
@@ -707,8 +790,8 @@ class Govee extends utils.Adapter {
 		var model = await this.getStateAsync(instance + '.' + id + '.model');
 		axios.get('https://developer-api.govee.com/v1/devices/state?device=' + encodeURI(id) + '&model=' + encodeURI(model.val),config)
 			.then((newresmod) => {
-				this.log.info('Request send: get device info (' + id + ')');
-				this.log.info('Server Response: ' + newresmod.status + ' (' + newresmod.statusText + ')');
+				this.postLog('Request send: get device info (' + id + ')',"info");
+				this.postLog('Server Response: ' + newresmod.status + ' (' + newresmod.statusText + ')',"info");
 				if(newresmod.status == 200) {
 					// Fill objects with values
 					for (var devicepropkey in newresmod.data.data.properties) {
@@ -723,16 +806,22 @@ class Govee extends utils.Adapter {
 								} else {this.setStateAsync(instance + '.' + id + '.powerState', false,true);}
 								break;
 							case 'brightness':
-								this.setStateAsync(instance + '.' + id + '.brightness', deviceprop.brightness,true);
+								if(deviceprop.brightness < 1) {
+									this.setStateAsync(instance + '.' + id + '.brightness', "1",true);
+								} else {
+									this.setStateAsync(instance + '.' + id + '.brightness', deviceprop.brightness,true);
+								}
 								break;
 							case 'color':
 								this.setStateAsync(instance + '.' + id + '.color.rgb.r', deviceprop.color.r,true);
 								this.setStateAsync(instance + '.' + id + '.color.rgb.g', deviceprop.color.g,true);
 								this.setStateAsync(instance + '.' + id + '.color.rgb.b', deviceprop.color.b,true);
-								var hsv = convert.rgb.hsv(deviceprop.color.r,deviceprop.color.g,deviceprop.color.b)
+								var hsv = convert.rgb.hsv(deviceprop.color.r,deviceprop.color.g,deviceprop.color.b);
 								this.setStateAsync(instance + '.' + id + '.color.hsv.h', hsv[0],true);
 								this.setStateAsync(instance + '.' + id + '.color.hsv.s', hsv[1],true);
 								this.setStateAsync(instance + '.' + id + '.color.hsv.v', hsv[2],true);
+								var newhex = convert.rgb.hex(deviceprop.color.r,deviceprop.color.g,deviceprop.color.b);
+								this.setStateAsync(instance + '.' + id + '.color.hex', "#" + newhex,true);
 								if(newcolorTempzero != 0) {
 									this.setStateAsync(instance + '.' + id + '.colorTem', newcolorTempzero,true);
 									this.setStateAsync(instance + '.' + id + '.colorTemMod', newcolorTempzeromod,true);
@@ -752,13 +841,14 @@ class Govee extends utils.Adapter {
 								this.setStateAsync(instance + '.' + id + '.color.hsv.h', 0,true);
 								this.setStateAsync(instance + '.' + id + '.color.hsv.s', 0,true);
 								this.setStateAsync(instance + '.' + id + '.color.hsv.v', 100,true);
+								this.setStateAsync(instance + '.' + id + '.color.hex', "#000000",true);
 								break;
 							default:
-								this.log.warn("cant find any propertie for Device: " + id);
+								this.postLog("cant find any propertie for Device: " + id,"warn");
 								break;
 						}
 					}
-					this.log.info('Values for object: ' + id + ' updated');
+					this.postLog('Values for object: ' + id + ' updated',"info");
 				}
 			}).catch((newerrmod) => {
 				this.log.error(newerrmod);
