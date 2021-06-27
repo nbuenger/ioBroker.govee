@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "govee",
-		"version": "0.0.3",
+		"version": "0.0.4",
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
@@ -14,6 +14,10 @@
 			"0.0.3": {
 				"en": "add expert log, add object hex, value brightness cant be under 1",
 				"de": "Expertenlog hinzugefügt, Object hex hinzugefügt, value brightness kann nicht kleiner als 1 sein"
+			},
+			"0.0.4": {
+				"en": "minor bugfixes",
+				"de": "minor bugfixes"
 			}
 		},
 		"title": "Govee",
