@@ -77,6 +77,10 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
  - add object hex.
  - value brightness cant be under 1.
 
+### 0.0.4
+* (Nick Bünger) Update 0.0.4
+ - minor bugfixes
+
 ## License
 MIT License
 
