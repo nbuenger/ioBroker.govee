@@ -18,6 +18,3 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-6
-script:
-  - npm run test:package
-  - npm run test:integration
