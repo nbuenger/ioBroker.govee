@@ -119,35 +119,6 @@ describe('Test ' + adapterShortName + ' adapter', function() {
         });
     });
 /**/
-
-    it('Test ' + adapterShortName + ': check states', function (done) {
-        this.timeout(15000);
-
-        setTimeout(function () {
-            states.getState('weatherunderground.0.forecast.current.temp', function (err, state) {
-                expect(err).to.be.not.ok;
-                expect(state).to.be.ok;
-                expect(state.val).to.be.not.undefined;
-                expect(state.val).to.be.a('number');
-
-                states.getState('weatherunderground.0.forecast.current.windDegrees', function (err, state) {
-                    expect(err).to.be.not.ok;
-                    expect(state).to.be.ok;
-                    expect(state.val).to.be.not.undefined;
-                    expect(state.val).to.be.a('number');
-
-                    states.getState('weatherunderground.0.forecast.current.feelsLike', function (err, state) {
-                        expect(err).to.be.not.ok;
-                        expect(state).to.be.ok;
-                        expect(state.val).to.be.not.undefined;
-                        expect(state.val).to.be.a('number');
-                        done();
-                    });
-                });
-            });
-        }, 10000);
-    });
-
     after('Test ' + adapterShortName + ' adapter: Stop js-controller', function (done) {
         this.timeout(10000);
 
