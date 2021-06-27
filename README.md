@@ -6,6 +6,8 @@
 ![Number of Installations (latest)](https://iobroker.live/badges/govee-installed.svg)
 ![Number of Installations (stable)](https://iobroker.live/badges/govee-stable.svg)
 [![Dependency Status](https://img.shields.io/david/nbuenger/iobroker.govee.svg)](https://david-dm.org/nbuenger/iobroker.govee)
+[![Build](https://travis-ci.com/nbuenger/ioBroker.govee.svg?branch=main)
+
 
 [![NPM](https://nodei.co/npm/iobroker.govee.png?downloads=true)](https://nodei.co/npm/iobroker.govee/)
 
