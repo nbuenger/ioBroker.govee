@@ -1,6 +1,6 @@
 {
   "name": "iobroker.govee",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "control govee lights over there api",
   "author": {
     "name": "Nick Bünger",

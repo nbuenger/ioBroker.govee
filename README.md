@@ -59,6 +59,7 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
 | colorTemMod object | colorTemMod             | object for colorTemMod control (Needed for Yahka) |
 | model object       | model                   | object shows your device model                    |
 | online object      | online                  | object shows is your device online                |
+| retrievable object | retrievable             | object shows is your device retrievable           |
 | powerState object  | powerstate              | object shows is your device powered on or off     |
 
 ## Changelog
@@ -76,6 +77,14 @@ This adapter only works with govee Wifi lightnings not Bluetooth.
  - add expert log.
  - add object hex.
  - value brightness cant be under 1.
+
+### 0.0.4
+* (Nick Bünger) Update 0.0.4
+ - minor bugfixes
+
+### 0.0.5
+* (Nick Bünger) Update 0.0.5
+ - bugfixes for model H6104, H6159
 
 ## License
 MIT License
