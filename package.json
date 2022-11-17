@@ -1,5 +1,5 @@
 {
-  "name": "iobroker.govee-v1",
+  "name": "iobroker.govee",
   "version": "0.0.6",
   "description": "control govee lights over there api",
   "author": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/nbuenger/ioBroker.govee-v1"
+    "url": "https://github.com/nbuenger/ioBroker.govee"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.0"
@@ -46,7 +46,7 @@
     "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/nbuenger/ioBroker.govee-v1/issues"
+    "url": "https://github.com/nbuenger/ioBroker.govee/issues"
   },
   "readmeFilename": "README.md"
 }
