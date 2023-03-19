@@ -30,6 +30,8 @@ const ignoredCommands = {
 	}
 };
 
+const ignoreUpdateDevices = ["H6104"]
+
 // Load your modules here, e.g.:
 // const fs = require("fs");
 const axios = require('axios');
@@ -551,7 +553,7 @@ class Govee extends utils.Adapter {
 			this.setObjectNotExistsAsync(item.device + '.model', {
 				type: "state",
 				common: {
-					name: "govee.device.state.model",
+					name: "Device model",
 					type: "string",
 					role: "info.name",
 					read: true,
@@ -564,8 +566,8 @@ class Govee extends utils.Adapter {
 			this.setObjectNotExistsAsync(item.device + '.retrievable', {
 				type: "state",
 				common: {
-					name: "govee.device.state.retrievable",
-					type: "string",
+					name: "Device retrievable",
+					type: "boolean",
 					role: "info.status",
 					read: true,
 					write: false,
@@ -585,7 +587,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.powerState', {
 								type: "state",
 								common: {
-									name: "govee.device.state.power",
+									name: "Power state",
 									type: "boolean",
 									role: "switch",
 								},
@@ -602,7 +604,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.brightness', {
 								type: "state",
 								common: {
-									name: "govee.device.state.brightness",
+									name: "Brightness",
 									type: "number",
 									role: "level.dimmer",
 									min: 0,
@@ -621,7 +623,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color', {
 								type: "channel",
 								common: {
-									name: "govee.device.state.colors",
+									name: "Colors",
 									read: true,
 									write: false,
 								},
@@ -631,7 +633,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.rgb', {
 								type: "channel",
 								common: {
-									name: "govee.device.state.colors.rgb",
+									name: "RGB color",
 									read: true,
 									write: false,
 								},
@@ -641,7 +643,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.rgb.r', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.red",
+									name: "RGB red",
 									type: "number",
 									role: "level.color.red",
 									min: 0,
@@ -653,7 +655,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.rgb.g', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.green",
+									name: "RGB green",
 									type: "number",
 									role: "level.color.green",
 									min: 0,
@@ -665,7 +667,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.rgb.b', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.blue",
+									name: "RGB blue",
 									type: "number",
 									role: "level.color.blue",
 									min: 0,
@@ -677,7 +679,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.hsv', {
 								type: "channel",
 								common: {
-									name: "govee.device.state.colors.hsv",
+									name: "HSV color",
 									read: true,
 									write: false,
 								},
@@ -687,9 +689,9 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.hsv.h', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.hue",
+									name: "HSV hue",
 									type: "number",
-									role: "level.color.hue",
+									role: "HSV hue",
 									min: 0,
 									max: 360
 								},
@@ -699,7 +701,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.hsv.s', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.saturation",
+									name: "HSV saturation",
 									type: "number",
 									role: "level.color.saturation",
 									min: 0,
@@ -711,7 +713,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.hsv.v', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.value",
+									name: "HSV alue",
 									type: "number",
 									role: "level.color.value",
 									min: 0,
@@ -723,7 +725,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.color.hex', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colors.hex",
+									name: "HEX color",
 									type: "string",
 									role: "level.color.hex"
 								},
@@ -735,13 +737,12 @@ class Govee extends utils.Adapter {
 					case 'colorTem':
 						if(ignoredCommands.colorTem.models.includes(item.model)) {
 							this.postLog('Device: ' + this.cryptData(item.device) + ' not supports cmd "colorTem"',"warn");
-							this.log.error(item.model);
 						} else {
 							this.postLog('Device: ' + this.cryptData(item.device) + ' supports cmd "colorTem"',"info");
 							this.setObjectNotExistsAsync(item.device + '.colorTem', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colorTem",
+									name: "Color temperature",
 									type: "number",
 									role: "level.color.temperature",
 									min: item.properties.colorTem.range.min,
@@ -753,7 +754,7 @@ class Govee extends utils.Adapter {
 							this.setObjectNotExistsAsync(item.device + '.colorTemMod', {
 								type: "state",
 								common: {
-									name: "govee.device.state.colorTemMod",
+									name: "Color temperature modification",
 									type: "number",
 									role: "level.color.temperature",
 									min: 140,
@@ -772,6 +773,7 @@ class Govee extends utils.Adapter {
 				}
 			}
 			this.postLog('Device "' + this.cryptData(item.device) + '" was created.',"info");
+			if (ignoreUpdateDevices.includes(item.model)) return;
 			axios.get('https://developer-api.govee.com/v1/devices/state?device=' + encodeURI(item.device) + '&model=' + encodeURI(item.model),config)
 			.then((newresmod) => {
 				this.postLog('Request send: get device info (' + this.cryptData(item.device) + ')',"info");
@@ -785,7 +787,7 @@ class Govee extends utils.Adapter {
 								this.setObjectNotExistsAsync(item.device + '.online', {
 									type: "state",
 									common: {
-										name: "govee.device.state.online",
+										name: "Online state",
 										type: "boolean",
 										role: "indicator.reachable",
 										read: true,
@@ -881,6 +883,9 @@ class Govee extends utils.Adapter {
 		var colorTemMax;
 		var newcolorTempzero;
 		var newcolorTempzeromod;	
+		
+		if(ignoreUpdateDevices.includes(model.val)) return;
+		
 		try {
 			if(ignoredCommands.colorTem.models.includes(model.val)) {
 				// IGNORE
@@ -895,7 +900,6 @@ class Govee extends utils.Adapter {
 			newcolorTempzero = 0;
 			newcolorTempzeromod = 0;
 		}
-
 		
 		axios.get('https://developer-api.govee.com/v1/devices/state?device=' + encodeURI(id) + '&model=' + encodeURI(model.val),config)
 			.then((newresmod) => {
